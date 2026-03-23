@@ -178,11 +178,10 @@
   opacity: 0.8;
 }
 
-.floatingBtn {
+.floatingBtnRight {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  background: var(--theme-color, #1A171B);
   color: #fff;
   border-radius: 52px;
   padding: 0.75rem 1.5rem;
@@ -194,11 +193,82 @@
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   z-index: 100;
   transition: transform 0.2s;
+  border: none;
+  cursor: pointer;
 }
-.floatingBtn svg {
+.floatingBtnRight svg {
   width: 20px;
   height: 20px;
 }
-.floatingBtn:hover {
+.floatingBtnRight:hover {
   transform: translateY(-2px);
+}
+
+.floatingBtnLeft {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 100;
+  transition: transform 0.2s;
+  border: none;
+  cursor: pointer;
+}
+.floatingBtnLeft svg {
+  width: 24px;
+  height: 24px;
+}
+.floatingBtnLeft:hover {
+  transform: translateY(-2px);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modalContent {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  position: relative;
+  max-width: 90vw;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.closeBtn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #eeeeee;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+.closeBtn:hover {
+  background: #dedede;
 }

@@ -81,3 +81,37 @@ export async function deleteCard(id: string) {
   await prisma.card.delete({ where: { id } })
   revalidatePath('/admin')
 }
+
+export async function duplicateCard(id: string) {
+  const card = await prisma.card.findUnique({
+    where: { id },
+    include: { links: true, socials: true }
+  })
+  if (!card) throw new Error("Vizitka nenalezena")
+
+  const { id: _, createdAt: __, updatedAt: ___, links, socials, ...cardData } = card;
+  const newSlug = `${cardData.slug}-kopie-${Math.floor(Math.random() * 10000)}`
+
+  const newCard = await prisma.card.create({
+    data: {
+      ...cardData,
+      slug: newSlug,
+      links: {
+        create: links.map(link => {
+          const { id: _linkId, cardId: _linkCardId, ...linkData } = link;
+          return linkData;
+        })
+      },
+      socials: {
+        create: socials.map(social => {
+          const { id: _socialId, cardId: _socialCardId, ...socialData } = social;
+          return socialData;
+        })
+      }
+    },
+    include: { links: true, socials: true }
+  })
+
+  revalidatePath('/admin')
+  return newCard
+}

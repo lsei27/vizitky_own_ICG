@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { saveCard, deleteCard } from '@/app/actions/card'
+import { saveCard, deleteCard, duplicateCard } from '@/app/actions/card'
 import styles from './admin.module.css'
 import QRCodeGenerator from './QRCodeGenerator'
 
@@ -57,6 +57,24 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
       alert("Uloženo úspěšně!")
     } catch (err: any) {
       alert("Chyba při ukládání: " + err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDuplicate = async () => {
+    if (!activeCardId) return
+    if (!confirm('Opravdu chcete duplikovat tuto vizitku? Vytvoří se kopie s unikátní URL adresou.')) return
+
+    setLoading(true)
+    try {
+      const newCard = await duplicateCard(activeCardId)
+      setCards([newCard, ...cards])
+      setActiveCardId(newCard.id)
+      setFormData({ ...newCard, links: newCard.links, socials: newCard.socials })
+      alert("Vizitka zkopírována s novou unikátní URL!")
+    } catch (err: any) {
+      alert("Chyba při duplikování: " + err.message)
     } finally {
       setLoading(false)
     }
@@ -227,7 +245,10 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
         <div className={styles.actions}>
           <button type="submit" disabled={loading} className={styles.button}>{loading ? 'Ukládám...' : 'Uložit'}</button>
           {activeCardId && (
-            <button type="button" disabled={loading} onClick={handleDelete} className={`${styles.button} ${styles.buttonDanger}`}>Smazat</button>
+            <>
+              <button type="button" disabled={loading} onClick={handleDuplicate} className={styles.button} style={{background: '#666'}}>Duplikovat</button>
+              <button type="button" disabled={loading} onClick={handleDelete} className={`${styles.button} ${styles.buttonDanger}`}>Smazat</button>
+            </>
           )}
         </div>
       </form>

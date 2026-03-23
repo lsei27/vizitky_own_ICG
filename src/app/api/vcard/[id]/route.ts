@@ -22,9 +22,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (card.company) vcardLines.push(`ORG:${card.company}`)
   if (card.jobTitle) vcardLines.push(`TITLE:${card.jobTitle}`)
   
-  if (card.mobile) vcardLines.push(`TEL;TYPE=cell,voice:${card.mobile}`)
-  if (card.whatsapp) vcardLines.push(`TEL;TYPE=cell,whatsapp:${card.whatsapp}`)
-  if (card.sms) vcardLines.push(`TEL;TYPE=cell,sms:${card.sms}`)
+  const addedPhones = new Set<string>()
+
+  const addPhone = (number: string | null) => {
+    if (!number) return
+    const normalized = number.replace(/\s+/g, '')
+    if (!addedPhones.has(normalized)) {
+      vcardLines.push(`TEL;TYPE=cell,voice:${number}`)
+      addedPhones.add(normalized)
+    }
+  }
+
+  addPhone(card.mobile)
+  addPhone(card.whatsapp)
+  addPhone(card.sms)
   
   if (card.email) vcardLines.push(`EMAIL;TYPE=work,internet:${card.email}`)
   if (card.addressUrl) vcardLines.push(`URL:${card.addressUrl}`)

@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import styles from './card.module.css'
+import FloatingActions from './FloatingActions'
 
 export default async function CardPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -118,10 +119,12 @@ export default async function CardPage({ params }: { params: Promise<{ slug: str
         )}
       </div>
 
-      <a href={`/api/vcard/${card.id}`} className={styles.floatingBtn}>
-        <span>Přidat kontakt</span>
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-      </a>
+      <FloatingActions 
+        cardId={card.id} 
+        slug={card.slug} 
+        logoUrl={card.companyLogo || ''} 
+        themeColor={card.themeColor || '#1A171B'} 
+      />
     </div>
   )
 }
