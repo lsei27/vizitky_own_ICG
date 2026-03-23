@@ -257,7 +257,8 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
         <div style={{marginTop: '2rem'}}>
           <QRCodeGenerator 
             url={`${typeof window !== 'undefined' ? window.location.origin : ''}/${formData.slug}`} 
-            defaultLogo={formData.companyLogo || ''} 
+            defaultLogo={formData.companyLogo || ''}
+            slug={formData.slug}
           />
         </div>
       )}

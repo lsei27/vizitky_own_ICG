@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import QRCodeStyling from 'qr-code-styling'
 import styles from './admin.module.css'
 
-export default function QRCodeGenerator({ url, defaultLogo }: { url: string, defaultLogo?: string }) {
+export default function QRCodeGenerator({ url, defaultLogo, slug }: { url: string, defaultLogo?: string, slug: string }) {
   const [logoUrl, setLogoUrl] = useState(defaultLogo || '')
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<any>(null)
@@ -52,7 +52,7 @@ export default function QRCodeGenerator({ url, defaultLogo }: { url: string, def
     if (!qrCode.current) return
     // Temporarily update size to 2000px for 2K export
     qrCode.current.update({ width: 2000, height: 2000 })
-    await qrCode.current.download({ name: "vizitka-qr", extension: "png" })
+    await qrCode.current.download({ name: `${slug}-vizitka-qr`, extension: "png" })
     
     // Revert back to UI size
     qrCode.current.update({ width: 1080, height: 1080 })
