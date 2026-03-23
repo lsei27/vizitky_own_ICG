@@ -7,6 +7,7 @@ Tento repozitář obsahuje aplikaci pro zobrazení a správu digitálních vizit
 - **Jazyk**: TypeScript
 - **Styling**: Vanilla CSS a CSS Modules (úmyslně vynechán Tailwind CSS).
   - Hlavní design vizitky (`/[slug]/card.module.css`) detailně (pixel-perfect) kopíruje vizuální identitu z *QR Code Chimp*.
+  - Aplikace nativně hostuje font **Satoshi Variable** (umístěn bezpečně přes Next.js `next/font/local`, assety leží ve složce `/src/app/fonts/`).
   - Globální reset CSS je v `src/app/globals.css`.
 - **Databáze**: Prisma (verze 7.x)
 - **Generátor QR**: `qr-code-styling` (klientská knihovna)

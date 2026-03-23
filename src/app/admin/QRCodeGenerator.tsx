@@ -12,10 +12,11 @@ export default function QRCodeGenerator({ url, defaultLogo }: { url: string, def
   useEffect(() => {
     // We instantiate it dynamically on client to avoid SSR issues
     qrCode.current = new QRCodeStyling({
-      width: 300,
-      height: 300,
+      width: 1080,
+      height: 1080,
       data: url,
       image: logoUrl,
+      qrOptions: { errorCorrectionLevel: 'H' },
       dotsOptions: {
         color: "#222222",
         type: "dots"
@@ -30,7 +31,7 @@ export default function QRCodeGenerator({ url, defaultLogo }: { url: string, def
       },
       imageOptions: {
         crossOrigin: "anonymous",
-        margin: 10,
+        margin: 20,
         imageSize: 0.4
       }
     })
@@ -54,7 +55,7 @@ export default function QRCodeGenerator({ url, defaultLogo }: { url: string, def
     await qrCode.current.download({ name: "vizitka-qr", extension: "png" })
     
     // Revert back to UI size
-    qrCode.current.update({ width: 300, height: 300 })
+    qrCode.current.update({ width: 1080, height: 1080 })
   }
 
   return (
@@ -71,8 +72,15 @@ export default function QRCodeGenerator({ url, defaultLogo }: { url: string, def
         />
       </div>
 
+      <style dangerouslySetInnerHTML={{__html: `
+        .qr-preview-admin canvas {
+          width: 100% !important;
+          height: auto !important;
+          max-width: 300px;
+        }
+      `}} />
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-        <div ref={ref} style={{ border: '1px solid #eee', borderRadius: '16px', padding: '1rem', background: 'white' }} />
+        <div ref={ref} className="qr-preview-admin" style={{ border: '1px solid #eee', borderRadius: '16px', padding: '1rem', background: 'white', width: '300px', display: 'flex' }} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <p style={{ margin: 0, fontSize: '0.9rem', color: '#666', maxWidth: '300px', wordBreak: 'break-all' }}>
             Tento QR kód odkazuje návštěvníka na: <br/><strong>{url}</strong>

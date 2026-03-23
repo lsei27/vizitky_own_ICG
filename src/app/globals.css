@@ -3,6 +3,7 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   background-color: #f7f7f7;
+  font-family: var(--font-satoshi), -apple-system, sans-serif;
 }
 * {
   box-sizing: border-box;

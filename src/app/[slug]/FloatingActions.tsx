@@ -11,14 +11,15 @@ export default function FloatingActions({ cardId, slug, logoUrl, themeColor }: {
   useEffect(() => {
     if (showQR && qrRef.current) {
       const qrCode = new QRCodeStyling({
-        width: 250,
-        height: 250,
+        width: 1080,
+        height: 1080,
         data: `${window.location.origin}/${slug}`,
         image: logoUrl,
+        qrOptions: { errorCorrectionLevel: 'H' },
         dotsOptions: { color: "#222", type: "dots" },
         cornersSquareOptions: { type: "extra-rounded", color: themeColor },
         cornersDotOptions: { type: "square", color: themeColor },
-        imageOptions: { crossOrigin: "anonymous", margin: 10, imageSize: 0.4 }
+        imageOptions: { crossOrigin: "anonymous", margin: 20, imageSize: 0.4 }
       })
       qrRef.current.innerHTML = ''
       qrCode.append(qrRef.current)
@@ -43,7 +44,7 @@ export default function FloatingActions({ cardId, slug, logoUrl, themeColor }: {
           <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
             <button className={styles.closeBtn} onClick={() => setShowQR(false)}>✕</button>
             <h3 style={{marginTop: 0, textAlign: 'center', color: '#333'}}>Zobrazit kód</h3>
-            <div ref={qrRef} style={{ display: 'flex', justifyContent: 'center', background: 'white', padding: '1rem', borderRadius: '16px' }}></div>
+            <div ref={qrRef} className={styles.qrContainer}></div>
           </div>
         </div>
       )}
