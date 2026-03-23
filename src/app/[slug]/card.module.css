@@ -272,3 +272,19 @@
 .closeBtn:hover {
   background: #dedede;
 }
+
+.qrContainer {
+  display: flex;
+  justify-content: center;
+  background: white;
+  padding: 1rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+}
+.qrContainer canvas, .qrContainer svg {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+}
