@@ -89,7 +89,7 @@ export default async function CardPage({ params }: { params: Promise<{ slug: str
         {card.links.length > 0 && (
           <div className={styles.section}>
             <h3 className={styles.sectionTitle} style={{marginBottom: '1rem'}}>Odkazy</h3>
-            {card.links.map(link => (
+            {card.links.map((link: { id: string; title: string; url: string; iconUrl: string | null }) => (
               <a key={link.id} href={link.url} className={styles.linkItem} target="_blank" rel="noopener noreferrer">
                 {link.iconUrl && <div className={styles.linkItemIcon} style={{backgroundImage: `url(${link.iconUrl})`}}></div>}
                 <div className={styles.linkItemTitle}>{link.title}</div>
@@ -102,7 +102,7 @@ export default async function CardPage({ params }: { params: Promise<{ slug: str
         {card.socials.length > 0 && (
           <div className={styles.section}>
             <h3 className={styles.sectionTitle} style={{marginBottom: '1rem'}}>Sledujte nás</h3>
-            {card.socials.map(social => (
+            {card.socials.map((social: { id: string; platform: string; url: string; iconUrl: string | null }) => (
               <a key={social.id} href={social.url} className={styles.linkItem} target="_blank" rel="noopener noreferrer">
                 {social.iconUrl ? (
                   <div className={styles.linkItemIcon} style={{backgroundImage: `url(${social.iconUrl})`}}></div>
