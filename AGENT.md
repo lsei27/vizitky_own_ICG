@@ -32,4 +32,8 @@ Tento repozitář obsahuje aplikaci pro zobrazení a správu digitálních vizit
 3. `/admin` -> **Admin Dashboard / Správa**
    - Klientské rozhraní (`src/app/admin/CardForm.tsx`) běžící nad Next.js Server Actions (`src/app/actions/card.ts`).
    - Zajišťuje plný CRUD databáze, včetně dynamického přidávání pole pro odkazy a sítě.
-   - **QR Code Generátor**: Každá vizitka v adminu má k dispozici okno generátoru. Ten využívá `window.location.origin` společně se slugem vizitky pro zajištění stabilní adresy navzdory změnám prostředí (localhost vs Vercel doména). Pomocí `qr-code-styling` lze dynamicky vložit doprostřed QR kódu URL firemního loga a samotný kód navíc před stažením zvětšit a stáhnout jako pixel-perfect 2000x2000 px kompozici ve formátu PNG.
+   - **QR Code Generátor**: Každá vizitka v adminu i koncový frontend modul `FloatingActions.tsx` používají moderní render přes knihovnu `qr-code-styling`. Pro zamezení rozmazání kódu na jemných displejích se na pozadí plátno renderuje do obřího rozlišení **1080x1080 px** (s maximální tolerancí poškození "H") a následně je pro uživatele CSSkem vizuálně zmenšeno na míru. Osa generátoru do sebe automaticky vyřezává prostor pro nahrání URL loga. Stažený obrázek navíc inteligentně přejímá jmenovku dané karty (`[slug]-vizitka-qr.png`).
+   - **Klonování vizitek**: V okně server actions existuje logická vrstva `duplicateCard`. V administraci lze po jejím vyvolání provést deep-copy jedné konkrétní vizitky (včetně všech dynamických relací N:1 pro odkazy). Slugu naklonované vizitky je bezpečně přiřazen randomizovaný unikátní prefix (např. `-kopie-5321`), což jí ve stejný moment propůjčuje absolutně unikátní čitelný navázaný QR kód.
+
+## Design
+- Architektura používá jako primární ikonku projektového modulu strukturovaný formát `icon.png` uvnitř složky `src/app/`, skrze který Next.js 13+ zaručí precizní generování webových, "touch" icon i meta podkladů navzdory zahození tradiční historické favikony.
