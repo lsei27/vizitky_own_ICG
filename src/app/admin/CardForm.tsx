@@ -13,7 +13,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
     slug: '', name: '', jobTitle: '', company: '', 
     themeColor: '#1A171B', mobile: '', email: '', sms: '', whatsapp: '',
     addressTitle: '', street: '', city: '', zip: '', addressUrl: '',
-    profileImage: '', coverImage: '', companyLogo: '',
+    profileImage: '', coverImage: '', companyLogo: '', qrCodeLogo: '',
     links: [], socials: []
   })
 
@@ -37,7 +37,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
       slug: '', name: '', jobTitle: '', company: '', 
       themeColor: '#1A171B', mobile: '', email: '', sms: '', whatsapp: '',
       addressTitle: '', street: '', city: '', zip: '', addressUrl: '',
-      profileImage: '', coverImage: '', companyLogo: '',
+      profileImage: '', coverImage: '', companyLogo: '', qrCodeLogo: '',
       links: [], socials: []
     })
   }
@@ -257,7 +257,8 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
         <div style={{marginTop: '2rem'}}>
           <QRCodeGenerator 
             url={`${process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : '')}/${formData.slug}`} 
-            defaultLogo={formData.companyLogo || ''}
+            logoUrl={typeof formData.qrCodeLogo === 'string' ? formData.qrCodeLogo : (formData.companyLogo || '')}
+            onLogoChange={(val) => setFormData({...formData, qrCodeLogo: val})}
             slug={formData.slug}
           />
         </div>

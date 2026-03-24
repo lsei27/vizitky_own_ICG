@@ -4,8 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import QRCodeStyling from 'qr-code-styling'
 import styles from './admin.module.css'
 
-export default function QRCodeGenerator({ url, defaultLogo, slug }: { url: string, defaultLogo?: string, slug: string }) {
-  const [logoUrl, setLogoUrl] = useState(defaultLogo || '')
+export default function QRCodeGenerator({ url, logoUrl, onLogoChange, slug }: { url: string, logoUrl: string, onLogoChange: (url: string) => void, slug: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<any>(null)
 
@@ -67,7 +66,7 @@ export default function QRCodeGenerator({ url, defaultLogo, slug }: { url: strin
         <input 
           className={styles.input} 
           value={logoUrl} 
-          onChange={e => setLogoUrl(e.target.value)} 
+          onChange={e => onLogoChange(e.target.value)} 
           placeholder="https://...odkaz-na-logo.png"
         />
       </div>

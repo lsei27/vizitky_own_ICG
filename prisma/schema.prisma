@@ -15,6 +15,7 @@ model Card {
   profileImage String?
   coverImage   String?
   companyLogo  String?
+  qrCodeLogo   String?
   themeColor   String   @default("#1A171B")
 
   mobile       String?
