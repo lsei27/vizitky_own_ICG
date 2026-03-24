@@ -13,7 +13,7 @@ export default function FloatingActions({ cardId, slug, logoUrl, themeColor }: {
       const qrCode = new QRCodeStyling({
         width: 1080,
         height: 1080,
-        data: `${window.location.origin}/${slug}`,
+        data: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/${slug}`,
         image: logoUrl,
         qrOptions: { errorCorrectionLevel: 'H' },
         dotsOptions: { color: "#222", type: "dots" },
