@@ -2,7 +2,10 @@
 import { cookies } from "next/headers"
 
 export async function login(password: string) {
-  if (password === process.env.ADMIN_PASSWORD) {
+  const envPassword = process.env.ADMIN_PASSWORD;
+  if (!envPassword) return { success: false, error: "Server nemá v proměnných nastaveno heslo (ADMIN_PASSWORD)! Tím je zamezen přístup komukoliv." }
+
+  if (password === envPassword) {
     const cookieStore = await cookies()
     cookieStore.set("admin_token", password, { 
       httpOnly: true, 
