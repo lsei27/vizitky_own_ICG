@@ -8,6 +8,7 @@ import QRCodeGenerator from './QRCodeGenerator'
 export default function CardForm({ initialCards }: { initialCards: any[] }) {
   const [cards, setCards] = useState(initialCards)
   const [activeCardId, setActiveCardId] = useState<string | null>(null)
+  const [isDuplicateEdit, setIsDuplicateEdit] = useState(false)
   
   const [formData, setFormData] = useState<any>({
     slug: '', name: '', jobTitle: '', company: '', 
@@ -21,6 +22,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
 
   const handleSelectCard = async (card: any) => {
     setActiveCardId(card.id)
+    setIsDuplicateEdit(false)
     // In a real app we might fetch the full card if we didn't send all relations, but initialCards can be partial.
     // Let's just use what we have, or assume we loaded full for simplicity.
     // Fetch full card via API action
@@ -33,6 +35,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
 
   const handleNewCard = () => {
     setActiveCardId(null)
+    setIsDuplicateEdit(false)
     setFormData({
       slug: '', name: '', jobTitle: '', company: '', 
       themeColor: '#1A171B', mobile: '', email: '', sms: '', whatsapp: '',
@@ -53,6 +56,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
         setCards([saved, ...cards])
       }
       setActiveCardId(saved.id)
+      setIsDuplicateEdit(false)
       setFormData({ ...saved, links: (saved as any).links || formData.links || [], socials: (saved as any).socials || formData.socials || [] })
       alert("Uloženo úspěšně!")
     } catch (err: any) {
@@ -71,6 +75,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
       const newCard = await duplicateCard(activeCardId)
       setCards([newCard, ...cards])
       setActiveCardId(newCard.id)
+      setIsDuplicateEdit(true)
       setFormData({ ...newCard, links: newCard.links, socials: newCard.socials })
       alert("Vizitka zkopírována s novou unikátní URL!")
     } catch (err: any) {
@@ -125,8 +130,8 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
             <input required className={styles.input} value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} />
           </div>
           <div className={styles.formGroup}>
-            <label>URL Slug</label>
-            <input required className={styles.input} value={formData.slug || ''} onChange={e => setFormData({...formData, slug: e.target.value})} />
+            <label>URL Slug {activeCardId && !isDuplicateEdit && <span style={{color: '#999', fontSize: '0.8rem'}}>(uzamčeno)</span>}</label>
+            <input required disabled={!!activeCardId && !isDuplicateEdit} className={styles.input} value={formData.slug || ''} onChange={e => setFormData({...formData, slug: e.target.value})} style={activeCardId && !isDuplicateEdit ? {background: '#f5f5f5', color: '#666', border: '1px solid #ddd', cursor: 'not-allowed'} : undefined} />
           </div>
         </div>
         <div className={styles.row}>
