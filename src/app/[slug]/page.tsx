@@ -1,7 +1,26 @@
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 import styles from './card.module.css'
 import FloatingActions from './FloatingActions'
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const card = await prisma.card.findUnique({
+    where: { slug }
+  })
+  
+  if (!card) {
+    return {
+      title: "E-vizitka (Nenalezena)",
+    }
+  }
+
+  return {
+    title: `E-vizitka ${card.name}`,
+    description: card.jobTitle ? `${card.jobTitle} - ${card.company}` : `Elektronická vizitka - ${card.name}`,
+  }
+}
 
 export default async function CardPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
