@@ -10,22 +10,22 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@prisma/adapter-neon": "^7.5.0",
-    "@prisma/client": "^7.5.0",
-    "next": "16.2.1",
+    "@prisma/adapter-neon": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "next": "16.2.4",
     "qr-code-styling": "^1.9.2",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "19.2.5",
+    "react-dom": "19.2.5"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
-    "eslint-config-next": "16.2.1",
-    "prisma": "^7.5.0",
-    "typescript": "^5"
+    "eslint-config-next": "16.2.4",
+    "prisma": "^7.7.0",
+    "typescript": "^6"
   }
 }
