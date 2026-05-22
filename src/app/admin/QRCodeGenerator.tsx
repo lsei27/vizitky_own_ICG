@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import QRCodeStyling from 'qr-code-styling'
 import styles from './admin.module.css'
 
 export default function QRCodeGenerator({ url, logoUrl, onLogoChange, slug }: { url: string, logoUrl: string, onLogoChange: (url: string) => void, slug: string }) {
   const ref = useRef<HTMLDivElement>(null)
-  const qrCode = useRef<any>(null)
+  const qrCode = useRef<QRCodeStyling | null>(null)
 
   useEffect(() => {
     // We instantiate it dynamically on client to avoid SSR issues
@@ -39,7 +39,9 @@ export default function QRCodeGenerator({ url, logoUrl, onLogoChange, slug }: { 
       ref.current.innerHTML = ''
       qrCode.current.append(ref.current)
     }
-  }, [url]) // only recreate when core URL changes to not constantly flash
+    // logoUrl intentionally omitted — handled by separate effect to avoid flashing
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url])
 
   useEffect(() => {
     if (qrCode.current) {

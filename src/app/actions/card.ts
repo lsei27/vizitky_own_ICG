@@ -2,6 +2,19 @@
 
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import type { Card, Link, Social } from '@prisma/client'
+
+type LinkInput = Pick<Link, 'title' | 'url'> &
+  Partial<Pick<Link, 'id' | 'iconUrl' | 'cardId'>>
+
+type SocialInput = Pick<Social, 'platform' | 'url'> &
+  Partial<Pick<Social, 'id' | 'iconUrl' | 'cardId'>>
+
+type SaveCardInput = Pick<Card, 'slug' | 'name'> &
+  Partial<Omit<Card, 'slug' | 'name'>> & {
+    links?: LinkInput[]
+    socials?: SocialInput[]
+  }
 
 export async function getCards() {
   return await prisma.card.findMany({
@@ -29,7 +42,7 @@ export async function getCardById(id: string) {
   })
 }
 
-export async function saveCard(data: any) {
+export async function saveCard(data: SaveCardInput) {
   const { id, links, socials, ...cardData } = data
 
   let savedCard
@@ -43,7 +56,7 @@ export async function saveCard(data: any) {
       await prisma.link.deleteMany({ where: { cardId: id } })
       if (links.length > 0) {
         await prisma.link.createMany({
-          data: links.map((link: any) => ({ ...link, cardId: id }))
+          data: links.map((link) => ({ ...link, cardId: id }))
         })
       }
     }
@@ -52,7 +65,7 @@ export async function saveCard(data: any) {
       await prisma.social.deleteMany({ where: { cardId: id } })
       if (socials.length > 0) {
         await prisma.social.createMany({
-          data: socials.map((s: any) => ({ ...s, cardId: id }))
+          data: socials.map((s) => ({ ...s, cardId: id }))
         })
       }
     }

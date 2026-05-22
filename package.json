@@ -12,19 +12,19 @@
   "dependencies": {
     "@prisma/adapter-neon": "^7.8.0",
     "@prisma/client": "^7.8.0",
-    "next": "16.2.4",
+    "next": "^16.2.6",
     "qr-code-styling": "^1.9.2",
-    "react": "19.2.5",
-    "react-dom": "19.2.5"
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
   },
   "devDependencies": {
-    "@types/node": "^25",
-    "@types/react": "^19",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "dotenv": "^17.4.2",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.4",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.6",
     "prisma": "^7.8.0",
     "typescript": "^6"
   }

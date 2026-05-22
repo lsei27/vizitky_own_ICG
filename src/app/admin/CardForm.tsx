@@ -4,14 +4,28 @@ import { useState } from 'react'
 import { saveCard, deleteCard, duplicateCard } from '@/app/actions/card'
 import styles from './admin.module.css'
 import QRCodeGenerator from './QRCodeGenerator'
+import type { Card, Link, Social } from '@prisma/client'
 
-export default function CardForm({ initialCards }: { initialCards: any[] }) {
-  const [cards, setCards] = useState(initialCards)
+type LinkInput = Pick<Link, 'title' | 'url'> &
+  Partial<Pick<Link, 'id' | 'iconUrl' | 'cardId'>>
+
+type SocialInput = Pick<Social, 'platform' | 'url'> &
+  Partial<Pick<Social, 'id' | 'iconUrl' | 'cardId'>>
+
+type CardListItem = Pick<Card, 'id' | 'name' | 'slug' | 'company'>
+type CardFormData = Pick<Card, 'slug' | 'name'> &
+  Partial<Omit<Card, 'slug' | 'name'>> & {
+    links: LinkInput[]
+    socials: SocialInput[]
+  }
+
+export default function CardForm({ initialCards }: { initialCards: CardListItem[] }) {
+  const [cards, setCards] = useState<CardListItem[]>(initialCards)
   const [activeCardId, setActiveCardId] = useState<string | null>(null)
   const [isDuplicateEdit, setIsDuplicateEdit] = useState(false)
-  
-  const [formData, setFormData] = useState<any>({
-    slug: '', name: '', jobTitle: '', company: '', 
+
+  const [formData, setFormData] = useState<CardFormData>({
+    slug: '', name: '', jobTitle: '', company: '',
     themeColor: '#1A171B', mobile: '', email: '', sms: '', whatsapp: '',
     addressTitle: '', street: '', city: '', zip: '', addressUrl: '',
     profileImage: '', coverImage: '', companyLogo: '', qrCodeLogo: '',
@@ -20,7 +34,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
 
   const [loading, setLoading] = useState(false)
 
-  const handleSelectCard = async (card: any) => {
+  const handleSelectCard = async (card: CardListItem) => {
     setActiveCardId(card.id)
     setIsDuplicateEdit(false)
     // In a real app we might fetch the full card if we didn't send all relations, but initialCards can be partial.
@@ -45,11 +59,15 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
     })
   }
 
+  const errorMessage = (err: unknown) =>
+    err instanceof Error ? err.message : String(err)
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
       const saved = await saveCard(formData)
+      const savedWithRelations = saved as Card & { links?: Link[]; socials?: Social[] }
       if (activeCardId) {
         setCards(cards.map(c => c.id === saved.id ? saved : c))
       } else {
@@ -57,10 +75,14 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
       }
       setActiveCardId(saved.id)
       setIsDuplicateEdit(false)
-      setFormData({ ...saved, links: (saved as any).links || formData.links || [], socials: (saved as any).socials || formData.socials || [] })
+      setFormData({
+        ...saved,
+        links: savedWithRelations.links || formData.links || [],
+        socials: savedWithRelations.socials || formData.socials || [],
+      })
       alert("Uloženo úspěšně!")
-    } catch (err: any) {
-      alert("Chyba při ukládání: " + err.message)
+    } catch (err: unknown) {
+      alert("Chyba při ukládání: " + errorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -78,8 +100,8 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
       setIsDuplicateEdit(true)
       setFormData({ ...newCard, links: newCard.links, socials: newCard.socials })
       alert("Vizitka zkopírována s novou unikátní URL!")
-    } catch (err: any) {
-      alert("Chyba při duplikování: " + err.message)
+    } catch (err: unknown) {
+      alert("Chyba při duplikování: " + errorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -93,8 +115,8 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
       await deleteCard(activeCardId)
       setCards(cards.filter(c => c.id !== activeCardId))
       handleNewCard()
-    } catch (err: any) {
-      alert("Chyba: " + err.message)
+    } catch (err: unknown) {
+      alert("Chyba: " + errorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -211,7 +233,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
 
         <h3 className={styles.sectionTitle}>Webové odkazy</h3>
         <div className={styles.dynamicList}>
-          {(formData.links || []).map((link: any, idx: number) => (
+          {(formData.links || []).map((link: LinkInput, idx: number) => (
             <div key={idx} className={styles.dynamicItem}>
               <input placeholder="Titulek" className={styles.input} value={link.title} onChange={e => {
                 const newLinks = [...(formData.links || [])]; newLinks[idx].title = e.target.value; setFormData({...formData, links: newLinks})
@@ -222,7 +244,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
               <input placeholder="Ikona URL" className={styles.input} value={link.iconUrl || ''} onChange={e => {
                 const newLinks = [...(formData.links || [])]; newLinks[idx].iconUrl = e.target.value; setFormData({...formData, links: newLinks})
               }} />
-              <button type="button" onClick={() => setFormData({...formData, links: (formData.links || []).filter((_: any, i: number) => i !== idx)})}>X</button>
+              <button type="button" onClick={() => setFormData({...formData, links: (formData.links || []).filter((_, i: number) => i !== idx)})}>X</button>
             </div>
           ))}
           <button type="button" className={`${styles.button} ${styles.buttonSecondary}`} style={{marginTop: 10}} onClick={addLink}>Přidat odkaz</button>
@@ -230,7 +252,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
 
         <h3 className={styles.sectionTitle}>Sociální sítě</h3>
         <div className={styles.dynamicList}>
-          {(formData.socials || []).map((social: any, idx: number) => (
+          {(formData.socials || []).map((social: SocialInput, idx: number) => (
             <div key={idx} className={styles.dynamicItem}>
               <input placeholder="Platforma (např. facebook)" className={styles.input} value={social.platform} onChange={e => {
                 const newSoc = [...(formData.socials || [])]; newSoc[idx].platform = e.target.value; setFormData({...formData, socials: newSoc})
@@ -241,7 +263,7 @@ export default function CardForm({ initialCards }: { initialCards: any[] }) {
               <input placeholder="Ikona URL" className={styles.input} value={social.iconUrl || ''} onChange={e => {
                  const newSoc = [...(formData.socials || [])]; newSoc[idx].iconUrl = e.target.value; setFormData({...formData, socials: newSoc})
               }} />
-              <button type="button" onClick={() => setFormData({...formData, socials: (formData.socials || []).filter((_: any, i: number) => i !== idx)})}>X</button>
+              <button type="button" onClick={() => setFormData({...formData, socials: (formData.socials || []).filter((_, i: number) => i !== idx)})}>X</button>
             </div>
           ))}
           <button type="button" className={`${styles.button} ${styles.buttonSecondary}`} style={{marginTop: 10}} onClick={addSocial}>Přidat síť</button>
